@@ -1,0 +1,112 @@
+body {
+    width: 300px;
+    padding: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.speed-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.speed-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.speed-btn {
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    background: #f0f4f8;
+    border: 1px solid #b4b4b4;
+    border-radius: 6px;
+    color: #2196F3;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.speed-btn.active, .speed-btn:focus {
+    background: #2196F3;
+    color: #fff;
+    outline: none;
+}
+
+.speed-btn:hover {
+    background: #e3f2fd;
+}
+
+.speed-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+#current-speed {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.reset-btn {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.reset-btn:active {
+    transform: scale(0.95);
+}
+
+.shortcut-info {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.shortcut-info p {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+}
+
+.shortcut-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.shortcut-info li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+kbd {
+    background-color: #eee;
+    border-radius: 3px;
+    border: 1px solid #b4b4b4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.2);
+    color: #333;
+    display: inline-block;
+    font-size: 0.85em;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 4px;
+    white-space: nowrap;
+} 

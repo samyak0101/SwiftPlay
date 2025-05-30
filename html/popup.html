@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html id="popup-panel">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SwiftPlay</title>
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+    <div id="root">
+        <div class="speed-controls">
+            <div class="brand-title" style="text-align:center;font-weight:bold;font-size:18px;margin-bottom:8px;letter-spacing:1px;">SwiftPlay</div>
+            <div class="speed-display">
+                <span id="current-speed">1.0x</span>
+                <button id="reset-speed" class="reset-btn" title="Reset to 1.0x">↺</button>
+            </div>
+            <div class="speed-grid">
+                <button class="speed-btn" data-speed="0.1">0.1x</button>
+                <button class="speed-btn" data-speed="0.5">0.5x</button>
+                <button class="speed-btn" data-speed="1">1x</button>
+                <button class="speed-btn" data-speed="1.5">1.5x</button>
+                <button class="speed-btn" data-speed="2">2x</button>
+                <button class="speed-btn" data-speed="3">3x</button>
+                <button class="speed-btn" data-speed="5">5x</button>
+                <button class="speed-btn" data-speed="10">10x</button>
+                <button class="speed-btn" data-speed="15">15x</button>
+            </div>
+            <div class="shortcut-info">
+                <p>Shortcuts:</p>
+                <ul>
+                    <li>Slow Down: <kbd>A</kbd> (-0.1x)</li>
+                    <li>Speed Up: <kbd>S</kbd> (+0.1x)</li>
+                    <li>Reset Speed: <kbd>,</kbd> (1.0x)</li>
+                    <li>Max Speed: <kbd>.</kbd> (10.0x)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="../js/popup.js"></script>
+</body>
+</html> 

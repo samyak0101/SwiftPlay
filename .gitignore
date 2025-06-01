@@ -1,1 +1,51 @@
+# OS files
 .DS_Store
+Thumbs.db
+.directory
+desktop.ini
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Build directories
+dist/
+build/
+tmp/
+
+# Environment variables
+.env
+.env.local
+.env.*
+
+# Logs
+*.log
+
+# Sensitive information
+*.pem
+*.key
+*.crx
+
+# Store submission files
+STORE_SUBMISSION.md
+description.txt
+
+# Development files
+screenshots/placeholder_*
+screenshots/*.psd
+screenshots/*.ai
+screenshots/*.sketch
+
+# Package files
+package/*.zip
+package/v*

@@ -1,21 +1,37 @@
-SwiftPlay lets you take full control of video playback speed on any website.
+SwiftPlay - Video Speed Controller
+
+Take control of video playback speed on any website with SwiftPlay, the ultimate video speed controller extension.
 
 Features:
-- Instantly speed up, slow down, or reset video speed with keyboard shortcuts:
-  - A: Slow down by 0.1x (customizable)
-  - S: Speed up by 0.1x (customizable)
-  - ,: Reset to 1.0x (customizable key)
-  - .: Set to 10.0x (customizable key and value)
-- Fully customizable shortcuts - change keys and speed increments to your preference
-- Clean popup UI with one-click speed selection
-- Always see your current speed in the extension badge
-- Works on YouTube, Netflix, and all major video sites
-- No ads, no tracking, 100% privacy-friendly
+• Speed up or slow down videos with customizable keyboard shortcuts
+• Modern, clean interface with smooth animations
+• One-click speed selection with presets
+• Real-time speed display in the extension icon badge
+• Works on all major video platforms (YouTube, Netflix, Vimeo, etc.)
+• Universal compatibility with HTML5 video players
+• Fully customizable keyboard shortcuts and speed increments
+• Privacy-focused - no data collection or tracking
 
 How to use:
-1. Click the SwiftPlay icon to open the popup and pick a speed, or
-2. Use the keyboard shortcuts while watching any video
-3. Click the settings icon (⚙️) to customize your shortcuts
+1. Press keyboard shortcuts while watching videos:
+   - A: Slow down by 0.1x (customizable)
+   - S: Speed up by 0.1x (customizable)
+   - , (comma): Reset to normal speed (1.0x)
+   - . (period): Jump to maximum speed (10.0x)
 
-Support:
-If you have questions or feature requests, please leave a review or contact the developer. 
+2. Or click the SwiftPlay icon for the popup interface with:
+   - One-click speed selection
+   - Custom speed input
+   - Settings customization
+
+Perfect for:
+• Online courses and educational videos
+• Webinars and presentations
+• Podcasts and interviews
+• Tutorial videos
+• Movie and TV show binge-watching
+• Any video content where you want control over playback speed
+
+SwiftPlay respects your privacy - all functionality runs locally in your browser with no data collection or tracking.
+
+Get more done and save time with SwiftPlay - the sleek, powerful video speed controller built for productivity! 

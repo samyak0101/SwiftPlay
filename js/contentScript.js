@@ -38,20 +38,6 @@
         chrome.runtime.sendMessage({ action: 'updateBadge', speed: speed });
     }
 
-    // Function to get saved speed for current domain
-    function loadDomainSpeed() {
-        return new Promise((resolve) => {
-            chrome.runtime.sendMessage({ action: 'getDomainSpeed' }, (response) => {
-                if (response && response.speed !== null) {
-                    console.log('Loaded domain speed:', response.speed);
-                    resolve(response.speed);
-                } else {
-                    resolve(1.0); // Default to 1.0x if no saved speed
-                }
-            });
-        });
-    }
-
     // Function to set video speed
     function setSpeed(speed) {
         try {
@@ -122,13 +108,11 @@
         }
     }
 
-    // Function to check for videos and apply saved speed
-    function checkForVideosAndApplySpeed() {
+    // Function to check for videos and set initial speed
+    function checkForVideosAndInitialize() {
         const videos = document.getElementsByTagName('video');
         if (videos.length > 0) {
-            loadDomainSpeed().then(savedSpeed => {
-                setSpeed(savedSpeed);
-            });
+            setSpeed(1.0); // Always start at 1.0x
         } else {
             // If no videos found initially, set up a mutation observer to watch for them
             setupVideoDetection();
@@ -143,28 +127,41 @@
                     const videos = document.getElementsByTagName('video');
                     if (videos.length > 0) {
                         observer.disconnect();
-                        loadDomainSpeed().then(savedSpeed => {
-                            setSpeed(savedSpeed);
-                        });
+                        setSpeed(1.0); // Set initial speed to 1.0x
                         break;
                     }
                 }
             }
         });
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+        // Make sure document.body exists before observing
+        if (document.body) {
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        } else {
+            // If body doesn't exist yet, wait for it
+            const bodyCheckInterval = setInterval(() => {
+                if (document.body) {
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                    clearInterval(bodyCheckInterval);
+                }
+            }, 50);
+
+            // Clear interval after 10 seconds to avoid infinite checking
+            setTimeout(() => clearInterval(bodyCheckInterval), 10000);
+        }
 
         // Fallback: Also check periodically for videos
         setTimeout(() => {
             const videos = document.getElementsByTagName('video');
             if (videos.length > 0) {
                 observer.disconnect();
-                loadDomainSpeed().then(savedSpeed => {
-                    setSpeed(savedSpeed);
-                });
+                setSpeed(1.0);
             }
         }, 3000);
     }
@@ -200,7 +197,7 @@
 
     // Load shortcuts and initialize
     loadShortcuts();
-    checkForVideosAndApplySpeed();
+    checkForVideosAndInitialize();
 
     // Log that the content script has loaded
     console.log('Super Video Speed Controller content script loaded');

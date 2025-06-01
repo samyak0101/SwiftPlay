@@ -5,17 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SwiftPlay</title>
     <link rel="stylesheet" href="../css/popup.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 </head>
 <body>
     <div id="root">
         <div class="speed-controls">
             <div class="header">
-                <div class="brand-title" style="text-align:center;font-weight:bold;font-size:18px;margin-bottom:8px;letter-spacing:1px;">SwiftPlay</div>
+                <div class="brand-title">SwiftPlay</div>
                 <button id="settings-btn" class="icon-btn" title="Customize Shortcuts">⚙️</button>
             </div>
             <div class="speed-display">
                 <span id="current-speed">1.0x</span>
-                <button id="reset-speed" class="reset-btn" title="Reset to 1.0x">↺</button>
+                <button id="reset-speed" class="reset-btn" title="Reset to 1.0x">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4.01 7.58 4.01 12C4.01 16.42 7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
+                    </svg>
+                </button>
             </div>
             <div class="speed-grid">
                 <button class="speed-btn" data-speed="0.1">0.1x</button>
@@ -26,19 +31,16 @@
                 <button class="speed-btn" data-speed="3">3x</button>
                 <button class="speed-btn" data-speed="5">5x</button>
                 <button class="speed-btn" data-speed="10">10x</button>
-                <button class="speed-btn" data-speed="15">15x</button>
+                <button class="speed-btn custom-speed" data-speed="15">15x</button>
             </div>
             <div id="shortcut-info" class="shortcut-info">
-                <p>Shortcuts:</p>
+                <p>Keyboard Shortcuts</p>
                 <ul>
-                    <li>Slow Down: <kbd id="slow-down-key">A</kbd> (<span id="slow-down-amount">-0.1</span>x)</li>
-                    <li>Speed Up: <kbd id="speed-up-key">S</kbd> (<span id="speed-up-amount">+0.1</span>x)</li>
-                    <li>Reset Speed: <kbd id="reset-key">,</kbd> (1.0x)</li>
-                    <li>Max Speed: <kbd id="max-key">.</kbd> (<span id="max-amount">10.0</span>x)</li>
+                    <li><span>Slow Down</span> <kbd id="slow-down-key">A</kbd> <span id="slow-down-amount">-0.1</span>x</li>
+                    <li><span>Speed Up</span> <kbd id="speed-up-key">S</kbd> <span id="speed-up-amount">+0.1</span>x</li>
+                    <li><span>Reset Speed</span> <kbd id="reset-key">,</kbd> <span>(1.0x)</span></li>
+                    <li><span>Max Speed</span> <kbd id="max-key">.</kbd> <span id="max-amount">10.0</span>x</li>
                 </ul>
-            </div>
-            <div class="site-memory-indicator">
-                <span id="current-site-memory">Remembering speed for this site</span>
             </div>
         </div>
         
@@ -70,13 +72,6 @@
                     <label for="max-amount-input">Speed:</label>
                     <input type="number" id="max-amount-input" step="0.5" min="1" max="16" class="amount-input">
                 </div>
-                <div class="toggle-option">
-                    <label for="remember-site-speeds">Remember site speeds:</label>
-                    <label class="switch">
-                        <input type="checkbox" id="remember-site-speeds" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
                 <div class="form-actions">
                     <button type="submit" id="save-settings" class="save-btn">Save</button>
                     <button type="button" id="reset-defaults" class="reset-defaults-btn">Reset to Defaults</button>
@@ -97,7 +92,7 @@
                 </div>
                 <div class="onboarding-step">
                     <div class="step-number">3</div>
-                    <p>SwiftPlay remembers your preferred speed for each site</p>
+                    <p>Change video speed instantly on any website</p>
                 </div>
                 <button id="onboarding-close" class="onboarding-btn">Got it!</button>
             </div>

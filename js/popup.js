@@ -1,9 +1,7 @@
 class SpeedController {
     constructor() {
         this.state = {
-            speed: 1,
-            currentDomain: '',
-            rememberSiteSpeeds: true
+            speed: 1
         };
         
         this.defaultShortcuts = {
@@ -24,7 +22,6 @@ class SpeedController {
         this.toggleSettings = this.toggleSettings.bind(this);
         this.saveSettings = this.saveSettings.bind(this);
         this.resetDefaultSettings = this.resetDefaultSettings.bind(this);
-        this.updateSiteMemoryDisplay = this.updateSiteMemoryDisplay.bind(this);
         this.closeOnboarding = this.closeOnboarding.bind(this);
         
         // Initialize UI when DOM is ready
@@ -38,7 +35,7 @@ class SpeedController {
     async loadSettings() {
         try {
             // Load shortcuts
-            const result = await chrome.storage.sync.get(['shortcuts', 'rememberSiteSpeeds', 'onboardingComplete']);
+            const result = await chrome.storage.sync.get(['shortcuts', 'onboardingComplete']);
             
             if (result.shortcuts) {
                 this.shortcuts = result.shortcuts;
@@ -46,14 +43,6 @@ class SpeedController {
             } else {
                 // If no saved shortcuts, use defaults and save them
                 await chrome.storage.sync.set({ shortcuts: this.defaultShortcuts });
-            }
-            
-            // Load site memory preference
-            if (result.rememberSiteSpeeds !== undefined) {
-                this.state.rememberSiteSpeeds = result.rememberSiteSpeeds;
-            } else {
-                // Default to true if not set
-                await chrome.storage.sync.set({ rememberSiteSpeeds: true });
             }
             
             // Check if onboarding has been completed
@@ -65,31 +54,6 @@ class SpeedController {
             console.error('Error loading settings:', error);
             // Fall back to defaults if there's an error
             this.shortcuts = {...this.defaultShortcuts};
-        }
-    }
-
-    async getCurrentTabInfo() {
-        try {
-            const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
-            if (tab && tab.url) {
-                const url = new URL(tab.url);
-                this.state.currentDomain = url.hostname;
-                this.updateSiteMemoryDisplay();
-            }
-        } catch (error) {
-            console.error('Error getting current tab info:', error);
-        }
-    }
-
-    updateSiteMemoryDisplay() {
-        const siteMemoryIndicator = document.getElementById('current-site-memory');
-        if (siteMemoryIndicator) {
-            if (this.state.rememberSiteSpeeds) {
-                siteMemoryIndicator.textContent = `Remembering speed for ${this.state.currentDomain}`;
-                siteMemoryIndicator.style.display = 'block';
-            } else {
-                siteMemoryIndicator.style.display = 'none';
-            }
         }
     }
 
@@ -127,9 +91,6 @@ class SpeedController {
         document.getElementById('reset-key-input').value = this.shortcuts.resetKey;
         document.getElementById('max-key-input').value = this.shortcuts.maxKey;
         document.getElementById('max-amount-input').value = this.shortcuts.maxAmount;
-        
-        // Set remember site speeds toggle
-        document.getElementById('remember-site-speeds').checked = this.state.rememberSiteSpeeds;
     }
 
     toggleSettings() {
@@ -156,9 +117,6 @@ class SpeedController {
             maxAmount: parseFloat(document.getElementById('max-amount-input').value) || this.defaultShortcuts.maxAmount
         };
         
-        // Get site memory preference
-        const rememberSiteSpeeds = document.getElementById('remember-site-speeds').checked;
-        
         // Validate that all keys are single characters
         for (const keyProp of ['slowDownKey', 'speedUpKey', 'resetKey', 'maxKey']) {
             if (newShortcuts[keyProp].length !== 1) {
@@ -169,15 +127,10 @@ class SpeedController {
         
         // Save to storage
         try {
-            await chrome.storage.sync.set({ 
-                shortcuts: newShortcuts,
-                rememberSiteSpeeds: rememberSiteSpeeds
-            });
+            await chrome.storage.sync.set({ shortcuts: newShortcuts });
             
             this.shortcuts = newShortcuts;
-            this.state.rememberSiteSpeeds = rememberSiteSpeeds;
             this.updateShortcutDisplay();
-            this.updateSiteMemoryDisplay();
             this.toggleSettings(); // Hide settings panel
         } catch (error) {
             console.error('Error saving settings:', error);
@@ -187,15 +140,10 @@ class SpeedController {
 
     async resetDefaultSettings() {
         try {
-            await chrome.storage.sync.set({ 
-                shortcuts: this.defaultShortcuts,
-                rememberSiteSpeeds: true
-            });
+            await chrome.storage.sync.set({ shortcuts: this.defaultShortcuts });
             
             this.shortcuts = {...this.defaultShortcuts};
-            this.state.rememberSiteSpeeds = true;
             this.updateShortcutDisplay();
-            this.updateSiteMemoryDisplay();
             this.populateSettingsForm(); // Update form with default values
         } catch (error) {
             console.error('Error resetting settings:', error);
@@ -290,6 +238,12 @@ class SpeedController {
             const speedDisplay = document.getElementById('current-speed');
             if (speedDisplay) {
                 speedDisplay.textContent = `${this.state.speed.toFixed(1)}x`;
+                
+                // Add pulse animation
+                speedDisplay.classList.add('speed-pulse');
+                setTimeout(() => {
+                    speedDisplay.classList.remove('speed-pulse');
+                }, 300);
             }
 
             // Update active state of speed buttons
@@ -319,8 +273,8 @@ class SpeedController {
 
     async initUI() {
         try {
-            // Get current tab information
-            await this.getCurrentTabInfo();
+            // Add entrance animation class
+            document.body.classList.add('popup-entrance');
             
             // Load saved settings
             await this.loadSettings();

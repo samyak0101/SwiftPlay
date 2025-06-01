@@ -6,17 +6,15 @@ This document tracks ideas for future improvements to the SwiftPlay extension.
 
 ### User Experience Improvements
 - [ ] Preset profiles (save and load different shortcut configurations)
-- [ ] Remember last used speed per website
 - [ ] Quick favorites (pin favorite speeds to the top)
 - [ ] Dark mode support
 - [ ] Import/export settings
 
 ### Functionality Enhancements
 - [ ] Fine-grained control with decimal inputs (e.g., set to exactly 1.75x)
-- [ ] Speed limiter for specific sites
-- [ ] Automatic speed adjustment based on content (e.g., slow down for educational content, speed up for ads)
-- [ ] Video progress tracking (remember position across sessions)
 - [ ] Advanced keyboard shortcuts (key combinations like Ctrl+Shift+A)
+- [ ] Video progress tracking (remember position across sessions)
+- [ ] Automatic speed adjustment based on content type
 
 ### Technical Improvements
 - [ ] Performance optimization for video detection
@@ -33,20 +31,20 @@ This document tracks ideas for future improvements to the SwiftPlay extension.
 
 ## Development Roadmap
 
-### Version 1.4 (Next Release)
+### Version 1.5 (Next Release)
 - Preset profiles
-- Remember last used speed per website
 - Dark mode support
-
-### Version 1.5
 - Fine-grained control with decimal inputs
+
+### Version 1.6
 - Quick favorites
 - Import/export settings
+- Advanced keyboard shortcuts
 
 ### Version 2.0
 - Complete UI redesign
-- Advanced keyboard shortcuts
 - Automatic speed adjustment
+- Enhanced video platform support
 
 ## Contribution Guidelines
 

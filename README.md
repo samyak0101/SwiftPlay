@@ -4,10 +4,11 @@ Instantly control video playback speed with keyboard shortcuts and a beautiful p
 
 ## Features
 - Instantly speed up, slow down, or reset video speed with keyboard shortcuts:
-  - `A`: Slow down by 0.1x
-  - `S`: Speed up by 0.1x
-  - `,`: Reset to 1.0x
-  - `.`: Set to 10.0x
+  - `A`: Slow down by 0.1x (customizable)
+  - `S`: Speed up by 0.1x (customizable)
+  - `,`: Reset to 1.0x (customizable key)
+  - `.`: Set to 10.0x (customizable key and value)
+- Fully customizable shortcuts - change keys and speed increments to your preference
 - Clean popup UI with one-click speed selection
 - Always see your current speed in the extension badge
 - Works on YouTube, Netflix, and all major video sites
@@ -16,6 +17,7 @@ Instantly control video playback speed with keyboard shortcuts and a beautiful p
 ## How to Use
 1. Click the SwiftPlay icon to open the popup and pick a speed, or
 2. Use the keyboard shortcuts while watching any video
+3. Click the settings icon (⚙️) to customize your shortcuts
 
 ## Privacy Policy
 SwiftPlay does not collect, store, or transmit any personal data. All functionality runs locally in your browser.

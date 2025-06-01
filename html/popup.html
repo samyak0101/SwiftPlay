@@ -9,7 +9,10 @@
 <body>
     <div id="root">
         <div class="speed-controls">
-            <div class="brand-title" style="text-align:center;font-weight:bold;font-size:18px;margin-bottom:8px;letter-spacing:1px;">SwiftPlay</div>
+            <div class="header">
+                <div class="brand-title" style="text-align:center;font-weight:bold;font-size:18px;margin-bottom:8px;letter-spacing:1px;">SwiftPlay</div>
+                <button id="settings-btn" class="icon-btn" title="Customize Shortcuts">⚙️</button>
+            </div>
             <div class="speed-display">
                 <span id="current-speed">1.0x</span>
                 <button id="reset-speed" class="reset-btn" title="Reset to 1.0x">↺</button>
@@ -25,15 +28,50 @@
                 <button class="speed-btn" data-speed="10">10x</button>
                 <button class="speed-btn" data-speed="15">15x</button>
             </div>
-            <div class="shortcut-info">
+            <div id="shortcut-info" class="shortcut-info">
                 <p>Shortcuts:</p>
                 <ul>
-                    <li>Slow Down: <kbd>A</kbd> (-0.1x)</li>
-                    <li>Speed Up: <kbd>S</kbd> (+0.1x)</li>
-                    <li>Reset Speed: <kbd>,</kbd> (1.0x)</li>
-                    <li>Max Speed: <kbd>.</kbd> (10.0x)</li>
+                    <li>Slow Down: <kbd id="slow-down-key">A</kbd> (<span id="slow-down-amount">-0.1</span>x)</li>
+                    <li>Speed Up: <kbd id="speed-up-key">S</kbd> (<span id="speed-up-amount">+0.1</span>x)</li>
+                    <li>Reset Speed: <kbd id="reset-key">,</kbd> (1.0x)</li>
+                    <li>Max Speed: <kbd id="max-key">.</kbd> (<span id="max-amount">10.0</span>x)</li>
                 </ul>
             </div>
+        </div>
+        
+        <div id="settings-panel" class="settings-panel" style="display: none;">
+            <div class="settings-header">
+                <h3>Customize Shortcuts</h3>
+                <button id="close-settings" class="icon-btn">✕</button>
+            </div>
+            <form id="shortcut-form" class="shortcut-form">
+                <div class="form-group">
+                    <label for="slow-down-key-input">Slow Down Key:</label>
+                    <input type="text" id="slow-down-key-input" maxlength="1" class="key-input">
+                    <label for="slow-down-amount-input">Amount:</label>
+                    <input type="number" id="slow-down-amount-input" step="0.1" min="0.1" max="5" class="amount-input">
+                </div>
+                <div class="form-group">
+                    <label for="speed-up-key-input">Speed Up Key:</label>
+                    <input type="text" id="speed-up-key-input" maxlength="1" class="key-input">
+                    <label for="speed-up-amount-input">Amount:</label>
+                    <input type="number" id="speed-up-amount-input" step="0.1" min="0.1" max="5" class="amount-input">
+                </div>
+                <div class="form-group">
+                    <label for="reset-key-input">Reset Key:</label>
+                    <input type="text" id="reset-key-input" maxlength="1" class="key-input">
+                </div>
+                <div class="form-group">
+                    <label for="max-key-input">Max Speed Key:</label>
+                    <input type="text" id="max-key-input" maxlength="1" class="key-input">
+                    <label for="max-amount-input">Speed:</label>
+                    <input type="number" id="max-amount-input" step="0.5" min="1" max="16" class="amount-input">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" id="save-settings" class="save-btn">Save</button>
+                    <button type="button" id="reset-defaults" class="reset-defaults-btn">Reset to Defaults</button>
+                </div>
+            </form>
         </div>
     </div>
     <script src="../js/popup.js"></script>

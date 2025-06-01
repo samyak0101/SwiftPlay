@@ -1,6 +1,38 @@
 (function() {
     'use strict';
 
+    // Default shortcuts configuration
+    let shortcuts = {
+        slowDownKey: 'a',
+        slowDownAmount: 0.1,
+        speedUpKey: 's',
+        speedUpAmount: 0.1,
+        resetKey: ',',
+        maxKey: '.',
+        maxAmount: 10.0
+    };
+
+    // Load shortcuts from storage
+    function loadShortcuts() {
+        chrome.storage.sync.get('shortcuts', (result) => {
+            if (result.shortcuts) {
+                shortcuts = result.shortcuts;
+                console.log('Loaded custom shortcuts:', shortcuts);
+            } else {
+                // If no saved shortcuts, use defaults and save them
+                chrome.storage.sync.set({ shortcuts });
+            }
+        });
+    }
+
+    // Listen for storage changes
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace === 'sync' && changes.shortcuts) {
+            shortcuts = changes.shortcuts.newValue;
+            console.log('Shortcuts updated:', shortcuts);
+        }
+    });
+
     // Function to update the badge
     function updateBadge(speed) {
         chrome.runtime.sendMessage({ action: 'updateBadge', speed: speed });
@@ -54,22 +86,18 @@
 
             const currentSpeed = videos[0].playbackRate;
             let newSpeed = currentSpeed;
+            const key = e.key.toLowerCase();
 
-            switch(e.key.toLowerCase()) {
-                case 'a':
-                    newSpeed = Math.max(0.1, currentSpeed - 0.1);
-                    break;
-                case 's':
-                    newSpeed = Math.min(16, currentSpeed + 0.1);
-                    break;
-                case ',':
-                    newSpeed = 1.0;
-                    break;
-                case '.':
-                    newSpeed = 10.0;
-                    break;
-                default:
-                    return;
+            if (key === shortcuts.slowDownKey) {
+                newSpeed = Math.max(0.1, currentSpeed - shortcuts.slowDownAmount);
+            } else if (key === shortcuts.speedUpKey) {
+                newSpeed = Math.min(16, currentSpeed + shortcuts.speedUpAmount);
+            } else if (key === shortcuts.resetKey) {
+                newSpeed = 1.0;
+            } else if (key === shortcuts.maxKey) {
+                newSpeed = shortcuts.maxAmount;
+            } else {
+                return;
             }
 
             // Round to 1 decimal place to avoid floating point issues
@@ -102,7 +130,8 @@
         return true; // Keep the message channel open for async response
     });
 
-    // Set initial speed to 1.0
+    // Load shortcuts and set initial speed to 1.0
+    loadShortcuts();
     setSpeed(1.0);
 
     // Log that the content script has loaded

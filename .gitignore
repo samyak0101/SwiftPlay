@@ -46,6 +46,8 @@ screenshots/*.psd
 screenshots/*.ai
 screenshots/*.sketch
 
-# Package files
-package/*.zip
-package/v*
+# Package and build files
+package/
+# Legacy patterns
+# package/*.zip
+# package/v*

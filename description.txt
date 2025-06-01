@@ -1,6 +1,6 @@
-SwiftPlay - Video Speed Controller
+SwiftPlay Video Speed Controller
 
-Take control of video playback speed on any website with SwiftPlay, the ultimate video speed controller extension.
+SwiftPlay is a video speed controller extension that lets you adjust playback speed on any website, including popular streaming services like YouTube, Netflix, and Prime Video. It helps you save time by speeding through unwanted content or slow sections, while allowing you to slow down important parts for better comprehension. The extension features customizable keyboard shortcuts that let you control video speed without interrupting your viewing experience, ensuring maximum immersion in the content you're watching. With a clean, unobtrusive interface, SwiftPlay works with all HTML5 video players and doesn't collect any personal data. Whether you're watching educational content, entertainment, or webinars, SwiftPlay gives you complete control over your viewing experience with just a few keystrokes.
 
 Features:
 • Speed up or slow down videos with customizable keyboard shortcuts

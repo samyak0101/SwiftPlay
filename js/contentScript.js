@@ -200,5 +200,5 @@
     checkForVideosAndInitialize();
 
     // Log that the content script has loaded
-    console.log('Super Video Speed Controller content script loaded');
+    console.log('SwiftPlay Video Speed Controller content script loaded');
 })();

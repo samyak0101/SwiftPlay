@@ -6,6 +6,7 @@ Features:
   - S: Speed up by 0.1x (customizable)
   - ,: Reset to 1.0x (customizable key)
   - .: Set to 10.0x (customizable key and value)
+- Remembers your preferred speed for each website automatically
 - Fully customizable shortcuts - change keys and speed increments to your preference
 - Clean popup UI with one-click speed selection
 - Always see your current speed in the extension badge
@@ -16,6 +17,7 @@ How to use:
 1. Click the SwiftPlay icon to open the popup and pick a speed, or
 2. Use the keyboard shortcuts while watching any video
 3. Click the settings icon (⚙️) to customize your shortcuts
+4. Your speed preferences are automatically remembered for each site
 
 Support:
 If you have questions or feature requests, please leave a review or contact the developer. 

@@ -1,7 +1,9 @@
 class SpeedController {
     constructor() {
         this.state = {
-            speed: 1
+            speed: 1,
+            currentDomain: '',
+            rememberSiteSpeeds: true
         };
         
         this.defaultShortcuts = {
@@ -22,6 +24,8 @@ class SpeedController {
         this.toggleSettings = this.toggleSettings.bind(this);
         this.saveSettings = this.saveSettings.bind(this);
         this.resetDefaultSettings = this.resetDefaultSettings.bind(this);
+        this.updateSiteMemoryDisplay = this.updateSiteMemoryDisplay.bind(this);
+        this.closeOnboarding = this.closeOnboarding.bind(this);
         
         // Initialize UI when DOM is ready
         if (document.readyState === 'loading') {
@@ -33,7 +37,9 @@ class SpeedController {
 
     async loadSettings() {
         try {
-            const result = await chrome.storage.sync.get('shortcuts');
+            // Load shortcuts
+            const result = await chrome.storage.sync.get(['shortcuts', 'rememberSiteSpeeds', 'onboardingComplete']);
+            
             if (result.shortcuts) {
                 this.shortcuts = result.shortcuts;
                 this.updateShortcutDisplay();
@@ -41,10 +47,63 @@ class SpeedController {
                 // If no saved shortcuts, use defaults and save them
                 await chrome.storage.sync.set({ shortcuts: this.defaultShortcuts });
             }
+            
+            // Load site memory preference
+            if (result.rememberSiteSpeeds !== undefined) {
+                this.state.rememberSiteSpeeds = result.rememberSiteSpeeds;
+            } else {
+                // Default to true if not set
+                await chrome.storage.sync.set({ rememberSiteSpeeds: true });
+            }
+            
+            // Check if onboarding has been completed
+            if (!result.onboardingComplete) {
+                this.showOnboarding();
+                await chrome.storage.sync.set({ onboardingComplete: true });
+            }
         } catch (error) {
             console.error('Error loading settings:', error);
             // Fall back to defaults if there's an error
             this.shortcuts = {...this.defaultShortcuts};
+        }
+    }
+
+    async getCurrentTabInfo() {
+        try {
+            const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+            if (tab && tab.url) {
+                const url = new URL(tab.url);
+                this.state.currentDomain = url.hostname;
+                this.updateSiteMemoryDisplay();
+            }
+        } catch (error) {
+            console.error('Error getting current tab info:', error);
+        }
+    }
+
+    updateSiteMemoryDisplay() {
+        const siteMemoryIndicator = document.getElementById('current-site-memory');
+        if (siteMemoryIndicator) {
+            if (this.state.rememberSiteSpeeds) {
+                siteMemoryIndicator.textContent = `Remembering speed for ${this.state.currentDomain}`;
+                siteMemoryIndicator.style.display = 'block';
+            } else {
+                siteMemoryIndicator.style.display = 'none';
+            }
+        }
+    }
+
+    showOnboarding() {
+        const onboardingOverlay = document.getElementById('onboarding-overlay');
+        if (onboardingOverlay) {
+            onboardingOverlay.style.display = 'flex';
+        }
+    }
+
+    closeOnboarding() {
+        const onboardingOverlay = document.getElementById('onboarding-overlay');
+        if (onboardingOverlay) {
+            onboardingOverlay.style.display = 'none';
         }
     }
 
@@ -68,6 +127,9 @@ class SpeedController {
         document.getElementById('reset-key-input').value = this.shortcuts.resetKey;
         document.getElementById('max-key-input').value = this.shortcuts.maxKey;
         document.getElementById('max-amount-input').value = this.shortcuts.maxAmount;
+        
+        // Set remember site speeds toggle
+        document.getElementById('remember-site-speeds').checked = this.state.rememberSiteSpeeds;
     }
 
     toggleSettings() {
@@ -94,6 +156,9 @@ class SpeedController {
             maxAmount: parseFloat(document.getElementById('max-amount-input').value) || this.defaultShortcuts.maxAmount
         };
         
+        // Get site memory preference
+        const rememberSiteSpeeds = document.getElementById('remember-site-speeds').checked;
+        
         // Validate that all keys are single characters
         for (const keyProp of ['slowDownKey', 'speedUpKey', 'resetKey', 'maxKey']) {
             if (newShortcuts[keyProp].length !== 1) {
@@ -104,9 +169,15 @@ class SpeedController {
         
         // Save to storage
         try {
-            await chrome.storage.sync.set({ shortcuts: newShortcuts });
+            await chrome.storage.sync.set({ 
+                shortcuts: newShortcuts,
+                rememberSiteSpeeds: rememberSiteSpeeds
+            });
+            
             this.shortcuts = newShortcuts;
+            this.state.rememberSiteSpeeds = rememberSiteSpeeds;
             this.updateShortcutDisplay();
+            this.updateSiteMemoryDisplay();
             this.toggleSettings(); // Hide settings panel
         } catch (error) {
             console.error('Error saving settings:', error);
@@ -116,9 +187,15 @@ class SpeedController {
 
     async resetDefaultSettings() {
         try {
-            await chrome.storage.sync.set({ shortcuts: this.defaultShortcuts });
+            await chrome.storage.sync.set({ 
+                shortcuts: this.defaultShortcuts,
+                rememberSiteSpeeds: true
+            });
+            
             this.shortcuts = {...this.defaultShortcuts};
+            this.state.rememberSiteSpeeds = true;
             this.updateShortcutDisplay();
+            this.updateSiteMemoryDisplay();
             this.populateSettingsForm(); // Update form with default values
         } catch (error) {
             console.error('Error resetting settings:', error);
@@ -194,6 +271,7 @@ class SpeedController {
                     console.error('Error sending message to content script:', messageError);
                 }
             }
+            
             // Send message to background to update badge
             chrome.runtime.sendMessage({ action: 'updateBadge', speed: speed });
             
@@ -241,6 +319,9 @@ class SpeedController {
 
     async initUI() {
         try {
+            // Get current tab information
+            await this.getCurrentTabInfo();
+            
             // Load saved settings
             await this.loadSettings();
             
@@ -251,6 +332,7 @@ class SpeedController {
             const closeSettingsButton = document.getElementById('close-settings');
             const saveSettingsButton = document.getElementById('shortcut-form');
             const resetDefaultsButton = document.getElementById('reset-defaults');
+            const onboardingCloseButton = document.getElementById('onboarding-close');
             
             if (speedGrid) {
                 speedGrid.addEventListener('click', this.handleSpeedButtonClick.bind(this));
@@ -276,7 +358,26 @@ class SpeedController {
                 resetDefaultsButton.addEventListener('click', this.resetDefaultSettings.bind(this));
             }
             
+            if (onboardingCloseButton) {
+                onboardingCloseButton.addEventListener('click', this.closeOnboarding.bind(this));
+            }
+            
             document.addEventListener('keydown', this.handleKeyPress);
+            
+            // Get current speed from content script
+            const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+            if (tab) {
+                try {
+                    chrome.tabs.sendMessage(tab.id, { action: 'getCurrentSpeed' }, (response) => {
+                        if (response && response.speed) {
+                            this.state.speed = response.speed;
+                            this.updateUI();
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error getting current speed:', error);
+                }
+            }
             
             // Initial UI update
             this.updateUI();

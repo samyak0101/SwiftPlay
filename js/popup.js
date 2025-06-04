@@ -273,70 +273,52 @@ class SpeedController {
 
     async initUI() {
         try {
-            // Add entrance animation class
-            document.body.classList.add('popup-entrance');
+            // Signal to background script that popup has opened
+            chrome.runtime.sendMessage({ action: 'popupOpened' });
             
-            // Load saved settings
+            // Setup event listeners
+            document.addEventListener('keydown', this.handleKeyPress);
+            document.getElementById('speed-buttons').addEventListener('click', this.handleSpeedButtonClick);
+            document.getElementById('reset-button').addEventListener('click', this.handleResetClick);
+            document.getElementById('settings-toggle').addEventListener('click', this.toggleSettings);
+            document.getElementById('settings-form').addEventListener('submit', this.saveSettings);
+            document.getElementById('reset-defaults').addEventListener('click', this.resetDefaultSettings);
+            document.getElementById('close-onboarding').addEventListener('click', this.closeOnboarding);
+            
+            // Hide settings panel initially
+            document.getElementById('settings-panel').style.display = 'none';
+            
+            // Load settings
             await this.loadSettings();
             
-            // Set up event listeners
-            const speedGrid = document.querySelector('.speed-grid');
-            const resetButton = document.getElementById('reset-speed');
-            const settingsButton = document.getElementById('settings-btn');
-            const closeSettingsButton = document.getElementById('close-settings');
-            const saveSettingsButton = document.getElementById('shortcut-form');
-            const resetDefaultsButton = document.getElementById('reset-defaults');
-            const onboardingCloseButton = document.getElementById('onboarding-close');
+            // Get current speed from active tab
+            await this.getCurrentSpeed();
             
-            if (speedGrid) {
-                speedGrid.addEventListener('click', this.handleSpeedButtonClick.bind(this));
-            }
-            
-            if (resetButton) {
-                resetButton.addEventListener('click', this.handleResetClick.bind(this));
-            }
-            
-            if (settingsButton) {
-                settingsButton.addEventListener('click', this.toggleSettings.bind(this));
-            }
-            
-            if (closeSettingsButton) {
-                closeSettingsButton.addEventListener('click', this.toggleSettings.bind(this));
-            }
-            
-            if (saveSettingsButton) {
-                saveSettingsButton.addEventListener('submit', this.saveSettings.bind(this));
-            }
-            
-            if (resetDefaultsButton) {
-                resetDefaultsButton.addEventListener('click', this.resetDefaultSettings.bind(this));
-            }
-            
-            if (onboardingCloseButton) {
-                onboardingCloseButton.addEventListener('click', this.closeOnboarding.bind(this));
-            }
-            
-            document.addEventListener('keydown', this.handleKeyPress);
-            
-            // Get current speed from content script
+            // Update UI with current state
+            this.updateUI();
+        } catch (error) {
+            console.error('Error initializing UI:', error);
+        }
+    }
+
+    async getCurrentSpeed() {
+        try {
             const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
             if (tab) {
                 try {
-                    chrome.tabs.sendMessage(tab.id, { action: 'getCurrentSpeed' }, (response) => {
-                        if (response && response.speed) {
-                            this.state.speed = response.speed;
-                            this.updateUI();
-                        }
+                    const response = await chrome.tabs.sendMessage(tab.id, {
+                        action: 'getCurrentSpeed'
                     });
-                } catch (error) {
-                    console.error('Error getting current speed:', error);
+                    
+                    if (response && typeof response.speed === 'number') {
+                        this.state.speed = response.speed;
+                    }
+                } catch (messageError) {
+                    console.log('Content script not ready or not found:', messageError);
                 }
             }
-            
-            // Initial UI update
-            this.updateUI();
         } catch (error) {
-            console.error('Error in initUI:', error);
+            console.error('Error getting current speed:', error);
         }
     }
 }

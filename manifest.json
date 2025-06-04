@@ -13,15 +13,6 @@
     "default_title": "__MSG_extName__",
     "default_popup": "html/popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["js/contentScript.js"],
-      "all_frames": true,
-      "match_about_blank": true,
-      "run_at": "document_start"
-    }
-  ],
   "default_locale": "en",
   "description": "__MSG_extShortDesc__",
   "icons": {
@@ -34,6 +25,31 @@
   "minimum_chrome_version": "88.0",
   "name": "__MSG_extName__",
   "permissions": ["alarms", "storage", "scripting", "activeTab"],
-  "host_permissions": ["<all_urls>"],
-  "version": "1.4.2.0"
+  "version": "1.4.3.0",
+  "commands": {
+    "slow-down": {
+      "suggested_key": {
+        "default": "Alt+A"
+      },
+      "description": "Slow down video"
+    },
+    "speed-up": {
+      "suggested_key": {
+        "default": "Alt+S"
+      },
+      "description": "Speed up video"
+    },
+    "reset-speed": {
+      "suggested_key": {
+        "default": "Alt+,"
+      },
+      "description": "Reset to normal speed"
+    },
+    "max-speed": {
+      "suggested_key": {
+        "default": "Alt+."
+      },
+      "description": "Set to maximum speed"
+    }
+  }
 }

@@ -48,6 +48,12 @@ screenshots/*.sketch
 
 # Package and build files
 package/
-# Legacy patterns
-# package/*.zip
-# package/v*
+!package/*.zip
+
+# Store Submission
+store_screenshots/
+SwiftPlay_v*.zip
+
+# Generated files
+*.zip
+!package/*.zip

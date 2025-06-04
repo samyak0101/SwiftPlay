@@ -12,27 +12,6 @@
         maxAmount: 10.0
     };
 
-    // Load shortcuts from storage
-    function loadShortcuts() {
-        chrome.storage.sync.get('shortcuts', (result) => {
-            if (result.shortcuts) {
-                shortcuts = result.shortcuts;
-                console.log('Loaded custom shortcuts:', shortcuts);
-            } else {
-                // If no saved shortcuts, use defaults and save them
-                chrome.storage.sync.set({ shortcuts });
-            }
-        });
-    }
-
-    // Listen for storage changes
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === 'sync' && changes.shortcuts) {
-            shortcuts = changes.shortcuts.newValue;
-            console.log('Shortcuts updated:', shortcuts);
-        }
-    });
-
     // Function to update the badge
     function updateBadge(speed) {
         chrome.runtime.sendMessage({ action: 'updateBadge', speed: speed });
@@ -112,11 +91,14 @@
     function checkForVideosAndInitialize() {
         const videos = document.getElementsByTagName('video');
         if (videos.length > 0) {
-            setSpeed(1.0); // Always start at 1.0x
-        } else {
-            // If no videos found initially, set up a mutation observer to watch for them
-            setupVideoDetection();
+            // Report current speed instead of setting it
+            if (videos[0].playbackRate !== 1.0) {
+                updateBadge(videos[0].playbackRate);
+            }
         }
+
+        // Set up mutation observer to watch for videos
+        setupVideoDetection();
     }
 
     // Set up mutation observer to detect when videos are added to the page
@@ -126,8 +108,7 @@
                 if (mutation.addedNodes.length) {
                     const videos = document.getElementsByTagName('video');
                     if (videos.length > 0) {
-                        observer.disconnect();
-                        setSpeed(1.0); // Set initial speed to 1.0x
+                        updateBadge(videos[0].playbackRate);
                         break;
                     }
                 }
@@ -155,24 +136,21 @@
             // Clear interval after 10 seconds to avoid infinite checking
             setTimeout(() => clearInterval(bodyCheckInterval), 10000);
         }
-
-        // Fallback: Also check periodically for videos
-        setTimeout(() => {
-            const videos = document.getElementsByTagName('video');
-            if (videos.length > 0) {
-                observer.disconnect();
-                setSpeed(1.0);
-            }
-        }, 3000);
     }
 
     // Add event listener for keyboard shortcuts
     document.addEventListener('keydown', handleKeyPress);
 
-    // Listen for messages from popup
+    // Listen for messages from background script and popup
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         try {
-            if (request.action === 'setSpeed') {
+            if (request.action === 'ping') {
+                // Used to check if content script is loaded
+                sendResponse({ status: 'ok' });
+            } else if (request.action === 'setShortcuts') {
+                shortcuts = request.shortcuts;
+                sendResponse({ success: true });
+            } else if (request.action === 'setSpeed') {
                 if (typeof request.speed === 'number' && !isNaN(request.speed)) {
                     setSpeed(request.speed);
                     sendResponse({ success: true });
@@ -195,8 +173,7 @@
         return true; // Keep the message channel open for async response
     });
 
-    // Load shortcuts and initialize
-    loadShortcuts();
+    // Initialize
     checkForVideosAndInitialize();
 
     // Log that the content script has loaded
